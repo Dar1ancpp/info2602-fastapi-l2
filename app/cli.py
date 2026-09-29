@@ -65,8 +65,14 @@ def create_user(username: str, email:str, password: str):
 
 @cli.command()
 def delete_user(username: str):
-    # The code for task 8 goes here. Once implemented, remove the line below that says "pass"
-    pass
+    with get_session() as db:
+        user = db.exec(select(User).where(User.username == username)).first()
+        if not user:
+            print(f'{username} not found! Unable to delete user.')
+            return
+        db.delete(user)
+        db.commit()
+        print(f'{username} deleted')
 
 
 if __name__ == "__main__":
